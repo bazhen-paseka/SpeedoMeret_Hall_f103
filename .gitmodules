@@ -1,0 +1,3 @@
+[submodule "Drivers/speedometer_hall_sm"]
+	path = Drivers/speedometer_hall_sm
+	url = https://github.com/bazhen-paseka/speedometer_hall_sm.git
