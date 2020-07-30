@@ -26,9 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-	#include "speedometer_Hall_local_config.h"
-	#include <string.h>
-	#include <stdio.h>
+	#include "speedometer_hall_sm.h"
 
 /* USER CODE END Includes */
 
@@ -49,25 +47,13 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
-typedef struct	{
-		UART_HandleTypeDef * uart_debug	;
-	} Debug_struct 						;
-
-	Debug_struct 			Debug_ch				= { 0 }	;
-
-	#define	DEBUG_STRING_SIZE		300
-
-	int counter = 0;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
-void Debug_print( char * _string ) ;
-void Debug_init( UART_HandleTypeDef * _huart ) ;
+
 
 /* USER CODE END PFP */
 
@@ -106,23 +92,7 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-
-	Debug_init(&huart1);
-
-	char debugString[DEBUG_STRING_SIZE];
-	sprintf(debugString," START\r\n AutoSpeedoMeter by Hall") ;
-	Debug_print( debugString ) ;
-
-	int		soft_version_arr_int[3] = {0} ;
-	soft_version_arr_int[0] 	= ((SOFT_VERSION) / 100) %10 ;
-	soft_version_arr_int[1] 	= ((SOFT_VERSION) /  10) %10 ;
-	soft_version_arr_int[2] 	= ((SOFT_VERSION)      ) %10 ;
-	sprintf (	debugString						,
-			" 2020-June-30 v%d.%d.%d. \r\n"	,
-			soft_version_arr_int[0]			,
-			soft_version_arr_int[1]			,
-			soft_version_arr_int[2]			) ;
-	Debug_print( debugString ) ;
+  	  Speedometer_init() ;
 
   /* USER CODE END 2 */
 
@@ -130,11 +100,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  	char debugString[DEBUG_STRING_SIZE];
-		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-		sprintf(debugString,"%03d;\r\n", counter++) ;
-		Debug_print( debugString ) ;
-		HAL_Delay(500);
+	  Speedometer_main();
 
     /* USER CODE END WHILE */
 
@@ -181,25 +147,6 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-
-void Debug_print( char * _string ) {
-	size_t len_szt = strlen( _string );
-	if (len_szt > DEBUG_STRING_SIZE) {
-		len_szt = DEBUG_STRING_SIZE ;
-	}
-	HAL_UART_Transmit(	Debug_ch.uart_debug		,
-						(uint8_t * ) _string	,
-						len_szt					,
-						100						) ;
-}
-//***********************************************************
-
-void Debug_init( UART_HandleTypeDef * _huart ) {
-	Debug_ch.uart_debug = _huart ;
-}
-//*********************************************************
-
 /* USER CODE END 4 */
 
 /**
